@@ -1,4 +1,4 @@
-import {overTime} from './charts'
+import {overTime, byYear} from './charts'
 import {raw} from './data'
-
-overTime(raw, {target: 'app', yVar: 'fraction full'})
+debugger;
+byYear(raw, {target: 'app', yVar: 'fraction full'})
