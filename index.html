@@ -4,9 +4,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Quabbin water levels</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="./static/favicon.png" />
   </head>
   <body>
-    <div id="app"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <h2 class="text-center">Water levels in the Quabbin reservoir</h2>
+      </div>
+      <div class="row chart-row">
+        <div class="col-md-12 col-lg-4">
+          As the largest inland body of water in Massachusetts, the Quabbin
+          reservoir acts as a barometer for the rainfall in the state.
+        </div>
+        <div id="over-time" class="col-lg-8 col-md-12"></div>
+      </div>
+      <br />
+      <div class="row chart-row">
+        <div class="col-lg-4 col-md-12">
+          More informative comparison
+        </div>
+        <div id="by-year" class="col-lg-8 col-md-12">
+
+        </div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="./static/style.css" />
     <!-- built files will be auto injected, and will be loaded after plotly. -->
   </body>
 </html>

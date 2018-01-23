@@ -1,18 +1,26 @@
-import {range} from './utils'
 import {group} from './data'
 import {Plotly} from './plotting'
+const modeBarConfig = {
+  modeBarButtonsToRemove: ['toImage', 'sendDataToCloud', 'toggleSpikelines'],
+  modeBarButtonsToAdd: [{
+    name: 'export image',
+    icon: Plotly.Icons.camera,
+    click (gd) {
+      Plotly.downloadImage(gd, {format: 'svg'})
+    }
+  }]
+}
 
 export function overTime (rows, options) {
-  let {title, yVar, target, onHover} = options
+  let {title, yVar, target} = options
   let name = `${yVar} over time`
   if (title === undefined) title = 'Quabbin reservoir ' + name
   const x = rows.map((row) => row.date)
   const y = rows.map((row) => row[yVar])
   const trace = {x, y, name, mode: 'lines'}
-  const layout = {title}
-  Plotly.newPlot(target, [trace], layout)
-  const targetElement = document.getElementById(target)
-  targetElement.on('plotly_hover', onHover || console.log)
+  const layout = {title, hovermode: 'closest', xaxis: {title: 'Date'}, yaxis: {title: 'Fraction capacity'}}
+  Plotly.newPlot(target, [trace], layout, {...modeBarConfig})
+  // const targetElement = document.getElementById(target)
 }
 
 const yearColors = [
@@ -39,7 +47,11 @@ export function byYear (rows, options) {
   let {title, yVar, target} = options
   let name = `${yVar} over time`
   if (title === undefined) title = 'Quabbin reservoir ' + name
-  let x = [...range(0, 366)]
+  const date = new Date(2000, 1, 0)
+  // debugger;
+  let x = Array(366).fill(1).map(
+    () => new Date(date.setDate(date.getDate() + 1))
+  )
   const colors = (function* () { yield * yearColors })()
   const traces = Object.entries(group(rows).by.year())
     .sort(
@@ -58,8 +70,18 @@ export function byYear (rows, options) {
         }
       }
     )
-  let layout = {title}
-  Plotly.newPlot(target, traces, layout)
+  let layout = {
+    title,
+    hovermode: 'closest',
+    xaxis: {
+      title: 'Date',
+      tickformat: '%b'
+    },
+    yaxis: {
+      title: 'Fraction capacity'
+    }
+  }
+  Plotly.newPlot(target, traces, layout, {...modeBarConfig})
 }
 
 // export function byMonth (data, options) {
