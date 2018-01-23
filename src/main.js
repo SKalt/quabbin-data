@@ -10,6 +10,7 @@ byYear(raw, {
   target: 'by-year',
   yVar: 'fraction full',
   title: 'Fraction capacity filled each year'
+  // yearsToShow: [2002, 2015, 2016, 2017]
 })
 
 let containers = ['over-time', 'by-year']

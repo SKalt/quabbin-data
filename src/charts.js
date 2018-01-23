@@ -1,5 +1,6 @@
 import {group} from './data'
 import {Plotly} from './plotting'
+import {range} from './utils'
 const modeBarConfig = {
   modeBarButtonsToRemove: ['toImage', 'sendDataToCloud', 'toggleSpikelines'],
   modeBarButtonsToAdd: [{
@@ -18,33 +19,20 @@ export function overTime (rows, options) {
   const x = rows.map((row) => row.date)
   const y = rows.map((row) => row[yVar])
   const trace = {x, y, name, mode: 'lines'}
-  const layout = {title, hovermode: 'closest', xaxis: {title: 'Date'}, yaxis: {title: 'Fraction capacity'}}
+  const layout = {
+    title,
+    hovermode: 'closest',
+    xaxis: {title: 'Date'},
+    yaxis: {title: 'Fraction capacity'}
+  }
   Plotly.newPlot(target, [trace], layout, {...modeBarConfig})
   // const targetElement = document.getElementById(target)
 }
 
-const yearColors = [
-  '#c9e4f1',
-  '#b4d9e8',
-  '#9fcede',
-  '#8bc3d1',
-  '#78b8c4',
-  '#66acb5',
-  '#55a0a5',
-  '#469494',
-  '#388682',
-  '#2c7871',
-  '#216a5f',
-  '#185a4d',
-  '#104a3c',
-  '#0a392b',
-  '#05261b',
-  '#02130d',
-  '#000000'
-] // a cubehelix colorscale I copied
+const yearColors = ['rgb(249,253,251)', 'rgb(231,247,243)', 'rgb(215,240,238)', 'rgb(200,233,235)', 'rgb(187,224,233)', 'rgb(176,214,232)', 'rgb(168,202,231)', 'rgb(162,191,229)', 'rgb(158,178,227)', 'rgb(156,165,223)', 'rgb(155,152,218)', 'rgb(155,139,211)', 'rgb(155,126,201)', 'rgb(155,114,190)', 'rgb(155,102,177)', 'rgb(154,92,163)', 'rgb(152,82,147)', 'rgb(149,74,130)']
 
 export function byYear (rows, options) {
-  let {title, yVar, target} = options
+  let {title, yVar, target, yearsToShow = [...range(2000, 2018)]} = options
   let name = `${yVar} over time`
   if (title === undefined) title = 'Quabbin reservoir ' + name
   const date = new Date(2000, 1, 0)
@@ -52,20 +40,23 @@ export function byYear (rows, options) {
   let x = Array(366).fill(1).map(
     () => new Date(date.setDate(date.getDate() + 1))
   )
-  const colors = (function* () { yield * yearColors })()
+  const showYears = Object.assign({}, ...yearsToShow.map(y => ({[y]: true})))
+  // const colors = (function*() { yield * yearColors })()
   const traces = Object.entries(group(rows).by.year())
     .sort(
       (a, b) => a[0] - b[0] // by order of years
     ).map(
-      ([year, values]) => {
+      ([year, values], index) => {
+        let color = year in showYears ? yearColors[index] : '#ccc'
         return {
           x,
           y: values.map((row) => row[yVar]),
           mode: 'line',
           opacity: 0.8,
           name: year,
+          showlegend: year in showYears,
           line: {
-            color: colors.next().value
+            color
           }
         }
       }
